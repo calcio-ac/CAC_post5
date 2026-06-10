@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>France WC 2022 — Passing Networks | Calcio AC</title>
+<style>
+  :root{
+    --navy:#21304D;      /* PMS 533 C  */
+    --blue:#17548C;      /* PMS 7692 C */
+    --red:#ED2939;       /* PMS Red 032 C */
+    --white:#FFFFFF;
+    --tint:#9DBBDD;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Courier New',Courier,monospace}
+  body{background:var(--navy);color:var(--white);min-height:100vh}
+  .tricolore{height:10px;display:flex}
+  .tricolore div{flex:1}
+  .tricolore .b{background:var(--blue)} .tricolore .w{background:var(--white)} .tricolore .r{background:var(--red)}
+
+  header{max-width:1180px;margin:0 auto;padding:28px 20px 8px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+  .logochip{background:var(--white);border-radius:12px;padding:8px 14px;display:flex;align-items:center}
+  .logochip img{height:44px;display:block}
+  .htext .kicker{color:var(--red);font-weight:bold;font-size:18px;letter-spacing:1px}
+  .htext h1{font-size:clamp(26px,4.5vw,44px);font-weight:bold;line-height:1.05;margin-top:4px}
+  .htext .sub{color:var(--tint);font-size:18px;font-weight:bold;margin-top:6px}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:18px 20px 60px}
+
+  .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 14px}
+  .tab{background:transparent;border:3px solid var(--blue);color:var(--white);font-weight:bold;
+       font-size:17px;padding:12px 16px;cursor:pointer;border-radius:8px;line-height:1.2}
+  .tab small{display:block;color:var(--tint);font-size:13px;font-weight:bold}
+  .tab.active{background:var(--red);border-color:var(--red)}
+  .tab.active small{color:#ffd9dc}
+  .tab:hover{border-color:var(--red)}
+
+  .controls{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:14px 0 18px;
+            background:rgba(23,84,140,.25);border:2px solid var(--blue);border-radius:10px;padding:14px 18px}
+  .controls label{font-weight:bold;font-size:18px}
+  .controls input[type=range]{width:200px;accent-color:var(--red)}
+  .controls .val{color:var(--red);font-weight:bold;font-size:20px;min-width:42px;text-align:center}
+  .btn{background:var(--red);color:#fff;border:none;font-weight:bold;font-size:17px;
+       padding:14px 20px;border-radius:8px;cursor:pointer;letter-spacing:.5px}
+  .btn.secondary{background:var(--blue)}
+  .btn:active{transform:translateY(1px)}
+  .spacer{flex:1}
+
+  .stage{display:flex;justify-content:center}
+  .cardbox{width:100%;max-width:760px}
+  canvas.main{width:100%;height:auto;display:block;border-radius:12px;
+              box-shadow:0 10px 40px rgba(0,0,0,.45);border:2px solid var(--blue)}
+
+  .statrow{display:flex;gap:14px;flex-wrap:wrap;margin:18px auto;max-width:760px}
+  .stat{flex:1;min-width:160px;background:rgba(23,84,140,.25);border:2px solid var(--blue);
+        border-radius:10px;padding:14px}
+  .stat .k{color:var(--tint);font-size:14px;font-weight:bold;letter-spacing:1px}
+  .stat .v{font-size:23px;font-weight:bold;margin-top:6px;line-height:1.25}
+  .stat .v.red{color:var(--red)}
+
+  h2.gridtitle{margin:40px 0 6px;font-size:26px}
+  h2.gridtitle::before{content:"> ";color:var(--red)}
+  .gridsub{color:var(--tint);font-weight:bold;font-size:16px;margin-bottom:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+  .cell{cursor:pointer;border:3px solid var(--blue);border-radius:10px;overflow:hidden;background:var(--navy)}
+  .cell.active,.cell:hover{border-color:var(--red)}
+  .cell canvas{width:100%;height:auto;display:block}
+
+  .note{max-width:1180px;margin:34px auto 0;border-top:3px solid var(--blue);padding-top:18px;
+        color:var(--tint);font-size:16px;font-weight:bold;line-height:1.6}
+  .note b{color:var(--white)}
+  .note a{color:var(--red);text-decoration:none;font-weight:bold}
+  @media(max-width:640px){
+    .controls{font-size:15px}
+    .tab{font-size:15px;padding:10px 12px}
+  }
+</style>
+</head>
+<body>
+<div class="tricolore"><div class="b"></div><div class="w"></div><div class="r"></div></div>
+
+<header>
+  <a class="logochip" href="https://calcioac.com" target="_blank" rel="noopener"><img src="web/logo.svg" alt="Calcio AC"></a>
+  <div class="htext">
+    <div class="kicker">&gt; CAC_ANALYTICS // PIPELINE_05</div>
+    <h1>FRANCE PASSING NETWORKS — WC 2022</h1>
+    <div class="sub">Seven games. Seven networks. Group stage &rarr; final &middot; StatsBomb event data</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="tabs" id="tabs"></div>
+
+  <div class="controls">
+    <label for="thr">MIN PASSES PER LINE</label>
+    <input type="range" id="thr" min="2" max="8" value="4">
+    <span class="val" id="thrval">4+</span>
+    <div class="spacer"></div>
+    <button class="btn" id="dl">&#11015; DOWNLOAD HD</button>
+    <button class="btn secondary" id="dlall">&#11015; DOWNLOAD ALL 7</button>
+  </div>
+
+  <div class="stage"><div class="cardbox"><canvas class="main" id="cv"></canvas></div></div>
+
+  <div class="statrow" id="stats"></div>
+
+  <h2 class="gridtitle">ALL SEVEN MATCHES</h2>
+  <div class="gridsub">Click any network to open it above.</div>
+  <div class="grid" id="grid"></div>
+
+  <div class="note">
+    <b>METHOD</b> — Completed passes from kickoff until France's <b>first substitution</b> (stable XI, so positions mean
+    something). Node position = average location of a player's passes + receptions; node size = passes involved in;
+    line width = passes between the pair, both directions summed. Early subs shrink the window — Australia stops at 12'
+    (Hernández injury), the final at 40' (double sub). These are build-up habits, not formation charts.<br><br>
+    Data: StatsBomb open data &middot; Notebook + HD slides: <a href="https://github.com/calcio-ac/CAC_post5" target="_blank" rel="noopener">github.com/calcio-ac/CAC_post5</a> &middot; <a href="https://calcioac.com" target="_blank" rel="noopener">calcioac.com</a>
+  </div>
+</div>
+
+<script>
+const NAVY='#21304D', BLUE='#17548C', RED='#ED2939', WHITE='#FFFFFF', TINT='#9DBBDD';
+const W=1080, H=1350;
+let DATA=null, current=0, threshold=4;
+
+/* ---------- pitch (StatsBomb 120x80, drawn vertical, attack = up) ---------- */
+function drawPitch(c,px,py,pw,ph){
+  const X=v=>px+(v/80)*pw;                 // SB y -> horizontal
+  const Yt=v=>py+(v/120)*ph;               // distance from TOP goal line
+  const Yb=v=>py+ph-(v/120)*ph;            // distance from BOTTOM goal line
+  c.strokeStyle='rgba(255,255,255,0.9)';
+  c.fillStyle='rgba(255,255,255,0.9)';
+  c.lineWidth=3.5;
+  c.strokeRect(px,py,pw,ph);
+  c.beginPath(); c.moveTo(px,py+ph/2); c.lineTo(px+pw,py+ph/2); c.stroke();
+  const r=(10/120)*ph;
+  c.beginPath(); c.arc(px+pw/2,py+ph/2,r,0,Math.PI*2); c.stroke();
+  c.beginPath(); c.arc(px+pw/2,py+ph/2,4,0,Math.PI*2); c.fill();
+  for(const top of [true,false]){
+    const Y=top?Yt:Yb;
+    const y0=Y(0), y18=Y(18), y6=Y(6), spot=Y(12);
+    c.strokeRect(X(18),Math.min(y0,y18),X(62)-X(18),Math.abs(y18-y0));   // box
+    c.strokeRect(X(30),Math.min(y0,y6),X(50)-X(30),Math.abs(y6-y0));     // six-yard
+    c.beginPath(); c.arc(px+pw/2,spot,4,0,Math.PI*2); c.fill();          // spot
+    const d=Math.abs(y18-spot);                                          // arc outside box
+    const a=Math.acos(d/r);
+    c.beginPath();
+    if(top) c.arc(px+pw/2,spot,r,Math.PI/2-a,Math.PI/2+a);
+    else    c.arc(px+pw/2,spot,r,-Math.PI/2-a,-Math.PI/2+a);
+    c.stroke();
+  }
+}
+
+/* ---------- one full 1080x1350 card ---------- */
+function render(c,m,idx,thr,s){
+  c.save(); c.scale(s,s);
+  c.textAlign='start'; c.textBaseline='alphabetic';
+  c.fillStyle=NAVY; c.fillRect(0,0,W,H);
+  c.fillStyle=BLUE;  c.fillRect(0,0,W/3,14);
+  c.fillStyle=WHITE; c.fillRect(W/3,0,W/3,14);
+  c.fillStyle=RED;   c.fillRect(2*W/3,0,W/3,14);
+
+  c.fillStyle=RED; c.font='bold 26px "Courier New"';
+  c.fillText('> FRANCE_PASSING_NETWORKS // WC 2022', 64, 80);
+  c.fillStyle=WHITE; c.font='bold 56px "Courier New"';
+  c.fillText(m.score, 64, 146);
+  c.fillStyle=TINT; c.font='bold 28px "Courier New"';
+  c.fillText(m.stage.toUpperCase()+' · '+m.date, 64, 190);
+  const top=m.edges[0];
+  c.fillStyle=RED; c.font='bold 26px "Courier New"';
+  c.fillText('TOP LINK: '+top.a+' ↔ '+top.b+' ('+top.n+')', 64, 228);
+
+  const px=158, py=268, pw=W-316, ph=H-268-122;
+  drawPitch(c,px,py,pw,ph);
+  const mx=(sx,sy)=>px+(sy/80)*pw, my=(sx)=>py+(1-sx/120)*ph;
+
+  const maxN=Math.max(...m.edges.map(e=>e.n));
+  const pos={}; m.nodes.forEach(n=>pos[n.name]=n);
+  m.edges.filter(e=>e.n>=thr).forEach(e=>{
+    const a=pos[e.a], b=pos[e.b]; if(!a||!b) return;
+    c.strokeStyle='rgba(255,255,255,'+(0.18+0.62*(e.n/maxN)).toFixed(2)+')';
+    c.lineWidth=2+(e.n/maxN)*18; c.lineCap='round';
+    c.beginPath(); c.moveTo(mx(a.x,a.y),my(a.x)); c.lineTo(mx(b.x,b.y),my(b.x)); c.stroke();
+  });
+
+  const maxC=Math.max(...m.nodes.map(n=>n.count));
+  m.nodes.forEach(n=>{
+    const x=mx(n.x,n.y), y=my(n.x);
+    const r=24+26*(n.count/maxC);
+    c.beginPath(); c.arc(x,y,r,0,Math.PI*2);
+    c.fillStyle=RED; c.fill();
+    c.lineWidth=5; c.strokeStyle=WHITE; c.stroke();
+    c.fillStyle=WHITE; c.font='bold '+Math.round(r*0.9)+'px "Courier New"';
+    c.textAlign='center'; c.textBaseline='middle';
+    c.fillText(n.jersey,x,y+1);
+    c.font='bold 25px "Courier New"'; c.textBaseline='top';
+    c.lineWidth=7; c.strokeStyle=NAVY; c.lineJoin='round';
+    c.strokeText(n.name,x,y+r+8);
+    c.fillText(n.name,x,y+r+8);
+    c.textAlign='start'; c.textBaseline='alphabetic';
+  });
+
+  c.strokeStyle=RED; c.fillStyle=RED; c.lineWidth=6;
+  const ax=W-66, ay1=H/2+160, ay2=H/2-100;
+  c.beginPath(); c.moveTo(ax,ay1); c.lineTo(ax,ay2); c.stroke();
+  c.beginPath(); c.moveTo(ax,ay2-24); c.lineTo(ax-15,ay2); c.lineTo(ax+15,ay2); c.closePath(); c.fill();
+  c.save(); c.translate(ax,ay1+26); c.rotate(Math.PI/2);
+  c.font='bold 24px "Courier New"'; c.fillText('ATTACK',0,8); c.restore();
+
+  c.fillStyle=WHITE; c.font='bold 25px "Courier New"';
+  c.fillText(m.n_passes+" completed passes before first sub (min "+m.first_sub+"') · line = "+thr+'+ passes', 64, H-64);
+  c.fillStyle=TINT; c.font='25px "Courier New"';
+  c.fillText('@calcio.ac · calcioac.com · data: StatsBomb', 64, H-26);
+  c.fillStyle=RED; c.font='bold 25px "Courier New"'; c.textAlign='right';
+  c.fillText('['+(idx+1)+'/7]', W-28, H-26);
+  c.textAlign='start';
+  c.restore();
+}
+
+/* ---------- UI ---------- */
+const cvMain=document.getElementById('cv');
+function drawMain(){
+  const s=2;                                    // retina-sharp on screen
+  cvMain.width=W*s; cvMain.height=H*s;
+  render(cvMain.getContext('2d'),DATA.matches[current],current,threshold,s);
+}
+function drawStats(){
+  const m=DATA.matches[current], top=m.edges[0];
+  document.getElementById('stats').innerHTML=
+    `<div class="stat"><div class="k">PASSES IN WINDOW</div><div class="v">${m.n_passes}</div></div>
+     <div class="stat"><div class="k">WINDOW CLOSES</div><div class="v">min ${m.first_sub}'</div></div>
+     <div class="stat"><div class="k">TOP LINK</div><div class="v red">${top.a} ↔ ${top.b} (${top.n})</div></div>`;
+}
+function drawGrid(){
+  document.querySelectorAll('.cell').forEach((cell,i)=>{
+    cell.classList.toggle('active',i===current);
+    const cv=cell.querySelector('canvas'), s=0.35;
+    cv.width=W*s; cv.height=H*s;
+    render(cv.getContext('2d'),DATA.matches[i],i,threshold,s);
+  });
+}
+function select(i){
+  current=i;
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+  document.querySelectorAll('.cell').forEach((c,j)=>c.classList.toggle('active',j===i));
+  drawMain(); drawStats();
+}
+function fileName(m,i){
+  return 'CAC_post5_'+String(i+1).padStart(2,'0')+'_france_'+m.opp.toLowerCase().replace(/ /g,'_')+'_HD.png';
+}
+function downloadMatch(i){
+  const m=DATA.matches[i], s=2;                 // 2160 x 2700 export
+  const off=document.createElement('canvas');
+  off.width=W*s; off.height=H*s;
+  render(off.getContext('2d'),m,i,threshold,s);
+  off.toBlob(b=>{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(b); a.download=fileName(m,i);
+    a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+  },'image/png');
+}
+
+fetch('web/data.json').then(r=>r.json()).then(d=>{
+  DATA=d;
+  const tabs=document.getElementById('tabs');
+  d.matches.forEach((m,i)=>{
+    const b=document.createElement('button');
+    b.className='tab'+(i===0?' active':'');
+    b.innerHTML=m.opp.toUpperCase()+'<small>'+m.stage+'</small>';
+    b.onclick=()=>select(i);
+    tabs.appendChild(b);
+  });
+  const grid=document.getElementById('grid');
+  d.matches.forEach((m,i)=>{
+    const cell=document.createElement('div');
+    cell.className='cell'+(i===0?' active':'');
+    cell.appendChild(document.createElement('canvas'));
+    cell.onclick=()=>{select(i); window.scrollTo({top:0,behavior:'smooth'});};
+    grid.appendChild(cell);
+  });
+  drawMain(); drawStats(); drawGrid();
+});
+
+document.getElementById('thr').oninput=e=>{
+  threshold=+e.target.value;
+  document.getElementById('thrval').textContent=threshold+'+';
+  drawMain(); drawGrid();
+};
+document.getElementById('dl').onclick=()=>downloadMatch(current);
+document.getElementById('dlall').onclick=()=>{
+  DATA.matches.forEach((_,i)=>setTimeout(()=>downloadMatch(i),i*700));
+};
+</script>
+</body>
+</html>

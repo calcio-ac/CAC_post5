@@ -1,11 +1,15 @@
 # CAC_post5 — France at World Cup 2022: Passing Networks
 
-**Calcio AC analytics pipeline #05.** One passing network per France match at Qatar 2022 — seven games from the group stage to the final — built from StatsBomb open event data and exported as 1080×1350 images for Instagram / LinkedIn.
+**Calcio AC analytics pipeline #05.** One passing network per France match at Qatar 2022 — seven games from the group stage to the final — built from StatsBomb open event data, served as an interactive site and exported as 1080×1350 images for Instagram / LinkedIn.
+
+**Live site:** [calcio-ac.github.io/CAC_post5](https://calcio-ac.github.io/CAC_post5/) — all seven networks in France's national palette (dark blue `#21304D` / blue `#17548C` / red `#ED2939`), with a min-passes-per-line slider, per-match HD download (2160×2700) and a download-all button. Networks are drawn on `<canvas>` straight from `web/data.json`, so downloads are pixel-perfect.
 
 ## Contents
 
 | File | What it is |
 |---|---|
+| [`index.html`](index.html) | Interactive dashboard: match tabs, threshold slider, all-matches grid, HD downloads. No build step. |
+| [`web/data.json`](web/data.json) | Nodes + edges + metadata for all 7 networks, exported from the notebook pipeline. |
 | [`france_passing_networks.ipynb`](france_passing_networks.ipynb) | Full pipeline: fetch → network build → CAC-styled render. Executed with outputs. |
 | [`images/`](images/) | The 9-slide carousel: cover, 7 match networks (chronological), methodology. 2160×2700 px (2x HD). |
 
