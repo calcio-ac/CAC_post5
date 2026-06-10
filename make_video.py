@@ -216,7 +216,7 @@ def draw_chrome(alpha=1.0):
                                            ec='none', alpha=alpha)))
     arts += txt(70, 30, '> FRANCE_PASSING_NETWORKS // WC 2022', 19, RED, alpha=alpha)
     arts += txt(W - 70, 30, 'CALCIO AC', 19, TINT, ha='right', alpha=alpha)
-    arts += txt(70, H - 46, '@calcio.ac · calcioac.com · data: StatsBomb', 16,
+    arts += txt(70, H - 46, 'calcioac.com · data: StatsBomb', 16,
                 TINT, weight='normal', alpha=alpha * 0.9)
     return arts
 
