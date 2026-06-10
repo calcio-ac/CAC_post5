@@ -175,30 +175,54 @@ function render(c,m,idx,thr,s){
   const mx=(sx,sy)=>px+(sy/80)*pw, my=(sx)=>py+(1-sx/120)*ph;
 
   const maxN=Math.max(...m.edges.map(e=>e.n));
-  const pos={}; m.nodes.forEach(n=>pos[n.name]=n);
+  const maxC=Math.max(...m.nodes.map(n=>n.count));
+
+  /* push overlapping circles apart so every number stays readable */
+  const pts={};
+  m.nodes.forEach(n=>pts[n.name]={n,x:mx(n.x,n.y),y:my(n.x),r:30+24*(n.count/maxC)});
+  const arr=Object.values(pts);
+  for(let it=0;it<120;it++){
+    let moved=false;
+    for(let i=0;i<arr.length;i++)for(let j=i+1;j<arr.length;j++){
+      const a=arr[i],b=arr[j];
+      let dx=b.x-a.x,dy=b.y-a.y;
+      const d=Math.hypot(dx,dy)||1, min=a.r+b.r+14;
+      if(d<min){
+        const push=(min-d)/2; dx/=d; dy/=d;
+        a.x-=dx*push; a.y-=dy*push; b.x+=dx*push; b.y+=dy*push; moved=true;
+      }
+    }
+    arr.forEach(p=>{                       /* keep circles + labels on the card */
+      p.x=Math.min(Math.max(p.x,px+p.r+50),px+pw-p.r-50);
+      p.y=Math.min(Math.max(p.y,py+p.r+4),py+ph-p.r-40);
+    });
+    if(!moved)break;
+  }
+
   m.edges.filter(e=>e.n>=thr).forEach(e=>{
-    const a=pos[e.a], b=pos[e.b]; if(!a||!b) return;
+    const a=pts[e.a], b=pts[e.b]; if(!a||!b) return;
     c.strokeStyle='rgba(255,255,255,'+(0.18+0.62*(e.n/maxN)).toFixed(2)+')';
     c.lineWidth=2+(e.n/maxN)*18; c.lineCap='round';
-    c.beginPath(); c.moveTo(mx(a.x,a.y),my(a.x)); c.lineTo(mx(b.x,b.y),my(b.x)); c.stroke();
+    c.beginPath(); c.moveTo(a.x,a.y); c.lineTo(b.x,b.y); c.stroke();
   });
 
-  const maxC=Math.max(...m.nodes.map(n=>n.count));
-  m.nodes.forEach(n=>{
-    const x=mx(n.x,n.y), y=my(n.x);
-    const r=24+26*(n.count/maxC);
-    c.beginPath(); c.arc(x,y,r,0,Math.PI*2);
+  arr.forEach(p=>{
+    c.beginPath(); c.arc(p.x,p.y,p.r,0,Math.PI*2);
     c.fillStyle=RED; c.fill();
     c.lineWidth=5; c.strokeStyle=WHITE; c.stroke();
-    c.fillStyle=WHITE; c.font='bold '+Math.round(r*0.9)+'px "Courier New"';
+    c.fillStyle=WHITE; c.font='bold '+Math.round(p.r*1.05)+'px "Courier New"';
     c.textAlign='center'; c.textBaseline='middle';
-    c.fillText(n.jersey,x,y+1);
-    c.font='bold 25px "Courier New"'; c.textBaseline='top';
-    c.lineWidth=7; c.strokeStyle=NAVY; c.lineJoin='round';
-    c.strokeText(n.name,x,y+r+8);
-    c.fillText(n.name,x,y+r+8);
-    c.textAlign='start'; c.textBaseline='alphabetic';
+    c.fillText(p.n.jersey,p.x,p.y+1);
   });
+  /* labels in a second pass so no circle can cover them */
+  c.font='bold 25px "Courier New"'; c.textBaseline='top';
+  c.lineJoin='round';
+  arr.forEach(p=>{
+    c.lineWidth=7; c.strokeStyle=NAVY;
+    c.strokeText(p.n.name,p.x,p.y+p.r+8);
+    c.fillStyle=WHITE; c.fillText(p.n.name,p.x,p.y+p.r+8);
+  });
+  c.textAlign='start'; c.textBaseline='alphabetic';
 
   c.strokeStyle=RED; c.fillStyle=RED; c.lineWidth=6;
   const ax=W-66, ay1=H/2+160, ay2=H/2-100;
