@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 <title>France WC 2022 — Passing Networks | Calcio AC</title>
 <style>
   :root{
@@ -12,7 +15,7 @@
     --white:#FFFFFF;
     --tint:#9DBBDD;
   }
-  *{margin:0;padding:0;box-sizing:border-box;font-family:'Courier New',Courier,monospace}
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Roboto',-apple-system,sans-serif}
   body{background:var(--navy);color:var(--white);min-height:100vh}
   .tricolore{height:10px;display:flex}
   .tricolore div{flex:1}
@@ -160,14 +163,14 @@ function render(c,m,idx,thr,s){
   c.fillStyle=WHITE; c.fillRect(W/3,0,W/3,14);
   c.fillStyle=RED;   c.fillRect(2*W/3,0,W/3,14);
 
-  c.fillStyle=RED; c.font='bold 26px "Courier New"';
+  c.fillStyle=RED; c.font='bold 26px Roboto';
   c.fillText('> FRANCE_PASSING_NETWORKS // WC 2022', 64, 80);
-  c.fillStyle=WHITE; c.font='bold 56px "Courier New"';
+  c.fillStyle=WHITE; c.font='bold 56px Roboto';
   c.fillText(m.score, 64, 146);
-  c.fillStyle=TINT; c.font='bold 28px "Courier New"';
+  c.fillStyle=TINT; c.font='bold 28px Roboto';
   c.fillText(m.stage.toUpperCase()+' · '+m.date, 64, 190);
   const top=m.edges[0];
-  c.fillStyle=RED; c.font='bold 26px "Courier New"';
+  c.fillStyle=RED; c.font='bold 26px Roboto';
   c.fillText('TOP LINK: '+top.a+' ↔ '+top.b+' ('+top.n+')', 64, 228);
 
   const px=158, py=268, pw=W-316, ph=H-268-122;
@@ -210,12 +213,12 @@ function render(c,m,idx,thr,s){
     c.beginPath(); c.arc(p.x,p.y,p.r,0,Math.PI*2);
     c.fillStyle=RED; c.fill();
     c.lineWidth=5; c.strokeStyle=WHITE; c.stroke();
-    c.fillStyle=WHITE; c.font='bold '+Math.round(p.r*1.05)+'px "Courier New"';
+    c.fillStyle=WHITE; c.font='bold '+Math.round(p.r*1.05)+'px Roboto';
     c.textAlign='center'; c.textBaseline='middle';
     c.fillText(p.n.jersey,p.x,p.y+1);
   });
   /* labels in a second pass so no circle can cover them */
-  c.font='bold 25px "Courier New"'; c.textBaseline='top';
+  c.font='bold 25px Roboto'; c.textBaseline='top';
   c.lineJoin='round';
   arr.forEach(p=>{
     c.lineWidth=7; c.strokeStyle=NAVY;
@@ -229,13 +232,13 @@ function render(c,m,idx,thr,s){
   c.beginPath(); c.moveTo(ax,ay1); c.lineTo(ax,ay2); c.stroke();
   c.beginPath(); c.moveTo(ax,ay2-24); c.lineTo(ax-15,ay2); c.lineTo(ax+15,ay2); c.closePath(); c.fill();
   c.save(); c.translate(ax,ay1+26); c.rotate(Math.PI/2);
-  c.font='bold 24px "Courier New"'; c.fillText('ATTACK',0,8); c.restore();
+  c.font='bold 24px Roboto'; c.fillText('ATTACK',0,8); c.restore();
 
-  c.fillStyle=WHITE; c.font='bold 25px "Courier New"';
+  c.fillStyle=WHITE; c.font='bold 25px Roboto';
   c.fillText(m.completed+'/'+m.attempted+' passes completed · map: top XI by minutes · line = '+thr+'+', 64, H-64);
-  c.fillStyle=TINT; c.font='25px "Courier New"';
+  c.fillStyle=TINT; c.font='25px Roboto';
   c.fillText('@calcio.ac · calcioac.com · data: StatsBomb', 64, H-26);
-  c.fillStyle=RED; c.font='bold 25px "Courier New"'; c.textAlign='right';
+  c.fillStyle=RED; c.font='bold 25px Roboto'; c.textAlign='right';
   c.fillText('['+(idx+1)+'/7]', W-28, H-26);
   c.textAlign='start';
   c.restore();
@@ -286,7 +289,10 @@ function downloadMatch(i){
   },'image/png');
 }
 
-fetch('web/data.json').then(r=>r.json()).then(d=>{
+Promise.all([
+  fetch('web/data.json').then(r=>r.json()),
+  document.fonts.load('bold 56px Roboto').then(()=>document.fonts.ready)
+]).then(([d])=>{
   DATA=d;
   const tabs=document.getElementById('tabs');
   d.matches.forEach((m,i)=>{
