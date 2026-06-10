@@ -11,6 +11,7 @@
 | [`index.html`](index.html) | Interactive dashboard: match tabs, threshold slider, all-matches grid, HD downloads. No build step. |
 | [`web/data.json`](web/data.json) | Nodes + edges + metadata for all 7 networks, exported from the notebook pipeline. |
 | [`france_passing_networks.ipynb`](france_passing_networks.ipynb) | Full pipeline: fetch → network build → CAC-styled render. Executed with outputs. |
+| [`videos/france_networks_4k.mp4`](videos/france_networks_4k.mp4) | 75 s cinematic film (16:9, 4K, 24 fps): the seven networks morphing match-to-match with possession / passes / xG callouts and an all-seven finale. Rendered by [`make_video.py`](make_video.py). |
 | [`images/`](images/) | The 9-slide carousel: cover, 7 match networks (chronological), methodology. 2160×2700 px (2x HD). |
 
 ## Method
