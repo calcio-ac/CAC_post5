@@ -93,8 +93,8 @@
 
   <div class="controls">
     <label for="thr">MIN PASSES PER LINE</label>
-    <input type="range" id="thr" min="2" max="8" value="4">
-    <span class="val" id="thrval">4+</span>
+    <input type="range" id="thr" min="2" max="8" value="2">
+    <span class="val" id="thrval">2+</span>
     <div class="spacer"></div>
     <button class="btn" id="dl">&#11015; DOWNLOAD HD</button>
     <button class="btn secondary" id="dlall">&#11015; DOWNLOAD ALL 7</button>
@@ -109,10 +109,11 @@
   <div class="grid" id="grid"></div>
 
   <div class="note">
-    <b>METHOD</b> — Completed passes from kickoff until France's <b>first substitution</b> (stable XI, so positions mean
-    something). Node position = average location of a player's passes + receptions; node size = passes involved in;
-    line width = passes between the pair, both directions summed. Early subs shrink the window — Australia stops at 12'
-    (Hernández injury), the final at 40' (double sub). These are build-up habits, not formation charts.<br><br>
+    <b>METHOD</b> — Each map shows the <b>11 France players with the most minutes in that match</b>, using every
+    completed pass between them across the full game (extra time included, shootouts excluded). Node position = average
+    location of a player's passes + receptions; node size = passes involved in; line width = passes between the pair,
+    both directions summed. Pass totals above count all France passes, attempted vs completed. These are build-up
+    habits, not formation charts.<br><br>
     Data: StatsBomb open data &middot; Notebook + HD slides: <a href="https://github.com/calcio-ac/CAC_post5" target="_blank" rel="noopener">github.com/calcio-ac/CAC_post5</a> &middot; <a href="https://calcioac.com" target="_blank" rel="noopener">calcioac.com</a>
   </div>
 </div>
@@ -120,7 +121,7 @@
 <script>
 const NAVY='#21304D', BLUE='#17548C', RED='#ED2939', WHITE='#FFFFFF', TINT='#9DBBDD';
 const W=1080, H=1350;
-let DATA=null, current=0, threshold=4;
+let DATA=null, current=0, threshold=2;
 
 /* ---------- pitch (StatsBomb 120x80, drawn vertical, attack = up) ---------- */
 function drawPitch(c,px,py,pw,ph){
@@ -207,7 +208,7 @@ function render(c,m,idx,thr,s){
   c.font='bold 24px "Courier New"'; c.fillText('ATTACK',0,8); c.restore();
 
   c.fillStyle=WHITE; c.font='bold 25px "Courier New"';
-  c.fillText(m.n_passes+" completed passes before first sub (min "+m.first_sub+"') · line = "+thr+'+ passes', 64, H-64);
+  c.fillText(m.completed+'/'+m.attempted+' passes completed · map: top XI by minutes · line = '+thr+'+', 64, H-64);
   c.fillStyle=TINT; c.font='25px "Courier New"';
   c.fillText('@calcio.ac · calcioac.com · data: StatsBomb', 64, H-26);
   c.fillStyle=RED; c.font='bold 25px "Courier New"'; c.textAlign='right';
@@ -225,9 +226,11 @@ function drawMain(){
 }
 function drawStats(){
   const m=DATA.matches[current], top=m.edges[0];
+  const pct=Math.round(100*m.completed/m.attempted);
   document.getElementById('stats').innerHTML=
-    `<div class="stat"><div class="k">PASSES IN WINDOW</div><div class="v">${m.n_passes}</div></div>
-     <div class="stat"><div class="k">WINDOW CLOSES</div><div class="v">min ${m.first_sub}'</div></div>
+    `<div class="stat"><div class="k">PASSES MADE</div><div class="v">${m.attempted}</div></div>
+     <div class="stat"><div class="k">COMPLETED</div><div class="v">${m.completed} <span style="color:var(--tint)">(${pct}%)</span></div></div>
+     <div class="stat"><div class="k">IN NETWORK (TOP XI)</div><div class="v">${m.n_passes}</div></div>
      <div class="stat"><div class="k">TOP LINK</div><div class="v red">${top.a} ↔ ${top.b} (${top.n})</div></div>`;
 }
 function drawGrid(){

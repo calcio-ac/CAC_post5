@@ -2,7 +2,7 @@
 
 **Calcio AC analytics pipeline #05.** One passing network per France match at Qatar 2022 — seven games from the group stage to the final — built from StatsBomb open event data, served as an interactive site and exported as 1080×1350 images for Instagram / LinkedIn.
 
-**Live site:** [calcio-ac.github.io/CAC_post5](https://calcio-ac.github.io/CAC_post5/) — all seven networks in France's national palette (dark blue `#21304D` / blue `#17548C` / red `#ED2939`), with a min-passes-per-line slider, per-match HD download (2160×2700) and a download-all button. Networks are drawn on `<canvas>` straight from `web/data.json`, so downloads are pixel-perfect.
+**Live site:** [calcio-ac.github.io/CAC_post5](https://calcio-ac.github.io/CAC_post5/) — all seven networks in France's national palette (dark blue `#21304D` / blue `#17548C` / red `#ED2939`), with a min-passes-per-line slider (default 2+), attempted-vs-completed pass totals, per-match HD download (2160×2700) and a download-all button. Networks are drawn on `<canvas>` straight from `web/data.json`, so downloads are pixel-perfect.
 
 ## Contents
 
@@ -16,10 +16,10 @@
 ## Method
 
 - **Data**: [StatsBomb open data](https://github.com/statsbomb/open-data) (`statsbombpy`), FIFA World Cup 2022, all 7 France matches.
-- **Window**: kickoff until France's **first substitution**, so the XI on the map actually played together. Completed passes only.
+- **The XI**: the 11 France players with the **most minutes in that match** (lineup position spans, extra time included, shootouts excluded) — full-game data, no substitution cutoff.
+- **Edges**: completed passes between those 11 across the whole match (both directions summed); drawn from 4+ combinations on the slides, threshold adjustable on the site (default 2+).
 - **Nodes**: position = average location of a player's passes *and* receptions; size = total passes involved in.
-- **Edges**: pass count between a pair (both directions summed), drawn from 4+ combinations; width and darkness scale with volume.
-- **Caveats**: early subs shrink the window — vs Australia it closes at 12' (Lucas Hernández injury, 46 passes), in the final at 40' (the Giroud + Dembélé double sub, 116 passes). These maps describe build-up structure, not formations.
+- **Totals**: each card also reports all France passes for the match, attempted vs completed. These maps describe build-up structure, not formations.
 
 ## Reproduce
 
