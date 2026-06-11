@@ -12,6 +12,7 @@
 | [`web/data.json`](web/data.json) | Nodes + edges + metadata for all 7 networks, exported from the notebook pipeline. |
 | [`france_passing_networks.ipynb`](france_passing_networks.ipynb) | Full pipeline: fetch → network build → CAC-styled render. Executed with outputs. |
 | [`videos/france_networks_4k.mp4`](videos/france_networks_4k.mp4) | 75 s cinematic film (16:9, 4K, 24 fps): the seven networks morphing match-to-match with possession / passes / xG callouts and an all-seven finale. Rendered by [`make_video.py`](make_video.py). |
+| [`videos/france_networks_reel.mp4`](videos/france_networks_reel.mp4) | The same film in 9:16 (2160×3840) for Instagram Reels / TikTok / Shorts: vertical pitch, stats below, stacked finale. `python3 make_video.py --reel`. |
 | [`images/`](images/) | The 9-slide carousel: cover, 7 match networks (chronological), methodology. 2160×2700 px (2x HD). |
 
 ## Method
